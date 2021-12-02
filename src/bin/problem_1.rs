@@ -15,20 +15,20 @@ fn main() {
     println!("Number of depth increases: {}", ans);
 }
 
-fn count_depth_increases(reader: BufReader<File>) -> i32 {
-    let mut count = -1; // don't count first line
-    let mut prev = 0;
+// fn count_depth_increases(reader: BufReader<File>) -> i32 {
+//     let mut count = -1; // don't count first line
+//     let mut prev = 0;
 
-    for depth in reader.lines().map(|line| line.unwrap().parse().unwrap()) {
-        if depth > prev {
-            count += 1;
-        }
+//     for depth in reader.lines().map(|line| line.unwrap().parse().unwrap()) {
+//         if depth > prev {
+//             count += 1;
+//         }
 
-        prev = depth;
-    }
+//         prev = depth;
+//     }
 
-    count
-}
+//     count
+// }
 
 fn count_depth_increases_window(reader: BufReader<File>) -> i32 {
     let mut count = -3; // first 3 values must be discarded
