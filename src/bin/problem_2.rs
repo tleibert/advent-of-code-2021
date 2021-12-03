@@ -6,38 +6,50 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 struct Position {
-    horizontal: i32,
-    depth: i32,
+    horizontal: i64,
+    depth: i64,
+    aim: i64,
+}
+
+impl Position {
+    fn new(horizontal: i64, depth: i64, aim: i64) -> Self {
+        Self {
+            horizontal,
+            depth,
+            aim,
+        }
+    }
+
+    fn update(&mut self, command: &str) {
+        let mut parts = command.split_ascii_whitespace();
+        let command = parts.next().unwrap();
+        let quantity: i64 = parts.next().unwrap().parse().unwrap();
+
+        match command {
+            "up" => self.aim -= quantity,
+            "down" => self.aim += quantity,
+            _ => {
+                self.horizontal += quantity;
+                self.depth += self.aim * quantity
+            }
+        };
+    }
+
+    fn product(&self) -> i64 {
+        self.horizontal * self.depth
+    }
 }
 
 fn main() {
     let fh = File::open("inputs/input_2.txt").unwrap();
     let reader = BufReader::new(fh);
 
-    let mut position = Position {
-        horizontal: 0,
-        depth: 0,
-    };
+    let mut position = Position::new(0, 0, 0);
 
     for line in reader.lines() {
         let line = line.unwrap();
-        update_position(&mut position, &line);
+        position.update(&line);
     }
 
-    println!(
-        "horizontal * depth {}",
-        position.horizontal * position.depth
-    );
-}
-
-fn update_position(position: &mut Position, command: &str) {
-    let mut parts = command.split_ascii_whitespace();
-    let command = parts.next().unwrap();
-    let quantity: i32 = parts.next().unwrap().parse().unwrap();
-
-    match command {
-        "up" => position.depth -= quantity,
-        "down" => position.depth += quantity,
-        _ => position.horizontal += quantity,
-    };
+    println!("horizontal * depth {}", position.product());
 }
